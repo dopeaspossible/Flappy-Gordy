@@ -2,7 +2,68 @@ const RAD = Math.PI / 180;
 const scrn = document.getElementById("canvas");
 const sctx = scrn.getContext("2d");
 scrn.tabIndex = 1;
-scrn.addEventListener("click", () => {
+
+// Original canvas dimensions
+const CANVAS_WIDTH = 276;
+const CANVAS_HEIGHT = 414;
+const ASPECT_RATIO = CANVAS_WIDTH / CANVAS_HEIGHT;
+
+// Scale factor for responsive design
+let scale = 1;
+
+// Function to resize canvas to fit screen
+function resizeCanvas() {
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+  const windowAspect = windowWidth / windowHeight;
+  
+  if (windowAspect > ASPECT_RATIO) {
+    // Window is wider than canvas - fit to height
+    scale = windowHeight / CANVAS_HEIGHT;
+  } else {
+    // Window is taller than canvas - fit to width
+    scale = windowWidth / CANVAS_WIDTH;
+  }
+  
+  // Set canvas display size
+  scrn.style.width = (CANVAS_WIDTH * scale) + 'px';
+  scrn.style.height = (CANVAS_HEIGHT * scale) + 'px';
+  
+  // Keep internal resolution the same for game logic
+  scrn.width = CANVAS_WIDTH;
+  scrn.height = CANVAS_HEIGHT;
+}
+
+// Initial resize
+resizeCanvas();
+
+// Resize on window resize or orientation change
+window.addEventListener('resize', resizeCanvas);
+window.addEventListener('orientationchange', () => {
+  setTimeout(resizeCanvas, 100);
+});
+
+// Prevent default touch behaviors
+document.addEventListener('touchstart', (e) => {
+  if (e.target === scrn || e.target === document.body) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('touchmove', (e) => {
+  if (e.target === scrn || e.target === document.body) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+document.addEventListener('touchend', (e) => {
+  if (e.target === scrn || e.target === document.body) {
+    e.preventDefault();
+  }
+}, { passive: false });
+
+// Game action handler
+function handleGameAction() {
   switch (state.curr) {
     case state.getReady:
       state.curr = state.Play;
@@ -20,6 +81,13 @@ scrn.addEventListener("click", () => {
       SFX.played = false;
       break;
   }
+}
+
+// Click and touch event handlers
+scrn.addEventListener("click", handleGameAction);
+scrn.addEventListener("touchstart", (e) => {
+  e.preventDefault();
+  handleGameAction();
 });
 
 scrn.onkeydown = function keyDown(e) {
