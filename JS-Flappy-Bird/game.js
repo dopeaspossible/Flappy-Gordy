@@ -360,14 +360,14 @@ const UI = {
       case state.gameOver:
         sctx.lineWidth = "2";
         sctx.font = "40px Squada One";
-        let sc = `SCORE :     ${this.score.curr}`;
+        let sc = `Skóre :     ${this.score.curr}`;
         try {
           this.score.best = Math.max(
             this.score.curr,
             localStorage.getItem("best")
           );
           localStorage.setItem("best", this.score.best);
-          let bs = `BEST  :     ${this.score.best}`;
+          let bs = `Naj   :     ${this.score.best}`;
           sctx.fillText(sc, scrn.width / 2 - 80, scrn.height / 2 + 0);
           sctx.strokeText(sc, scrn.width / 2 - 80, scrn.height / 2 + 0);
           sctx.fillText(bs, scrn.width / 2 - 80, scrn.height / 2 + 30);
@@ -419,7 +419,7 @@ function update() {
 }
 
 function draw() {
-  sctx.fillStyle = "#30c0df";
+  sctx.fillStyle = "#a4b7d8";
   sctx.fillRect(0, 0, scrn.width, scrn.height);
   bg.draw();
   pipe.draw();
