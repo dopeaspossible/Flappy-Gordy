@@ -45,14 +45,8 @@ body {
     }
     
     #canvas {
-        width: 100vw !important;
-        height: 100vh !important;
-        height: -webkit-fill-available !important; /* For iOS Safari */
         position: fixed;
-        top: 0;
-        left: 0;
-        object-fit: contain;
-        object-position: center;
+        /* Size will be set by JavaScript to fill screen */
     }
 }
 

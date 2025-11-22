@@ -14,7 +14,7 @@ let scale = 1;
 // Function to resize canvas to fit screen
 function resizeCanvas() {
   const windowWidth = window.innerWidth;
-  const windowHeight = window.innerHeight;
+  const windowHeight = window.innerHeight || document.documentElement.clientHeight;
   const windowAspect = windowWidth / windowHeight;
   const isMobile = windowWidth <= 768;
   
@@ -23,16 +23,27 @@ function resizeCanvas() {
   scrn.height = CANVAS_HEIGHT;
   
   if (isMobile) {
-    // On mobile, let CSS handle full screen fill
-    // CSS will make it 100vw x 100vh with object-fit: cover
-    scrn.style.width = '100vw';
-    scrn.style.height = '100vh';
-    // Use actual viewport height for iOS Safari
-    const actualHeight = window.innerHeight || document.documentElement.clientHeight;
-    scrn.style.height = actualHeight + 'px';
+    // On mobile, calculate scale to fill screen while maintaining aspect ratio
+    let displayWidth, displayHeight;
+    
+    if (windowAspect > ASPECT_RATIO) {
+      // Screen is wider - fit to height, width will be larger (will be cropped by overflow:hidden)
+      scale = windowHeight / CANVAS_HEIGHT;
+      displayHeight = windowHeight;
+      displayWidth = CANVAS_WIDTH * scale;
+    } else {
+      // Screen is taller - fit to width, height will be larger (will be cropped by overflow:hidden)
+      scale = windowWidth / CANVAS_WIDTH;
+      displayWidth = windowWidth;
+      displayHeight = CANVAS_HEIGHT * scale;
+    }
+    
+    scrn.style.width = displayWidth + 'px';
+    scrn.style.height = displayHeight + 'px';
     scrn.style.position = 'fixed';
-    scrn.style.top = '0';
-    scrn.style.left = '0';
+    scrn.style.top = '50%';
+    scrn.style.left = '50%';
+    scrn.style.transform = 'translate(-50%, -50%)';
   } else {
     // On desktop, maintain aspect ratio and center
     if (windowAspect > ASPECT_RATIO) {
@@ -46,6 +57,7 @@ function resizeCanvas() {
     scrn.style.position = 'relative';
     scrn.style.top = 'auto';
     scrn.style.left = 'auto';
+    scrn.style.transform = 'none';
   }
 }
 
