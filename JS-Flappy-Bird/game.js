@@ -367,7 +367,7 @@ const UI = {
             localStorage.getItem("best")
           );
           localStorage.setItem("best", this.score.best);
-          let bs = `Naj   :     ${this.score.best}`;
+          let bs = `Top skóre :  ${this.score.best}`;
           sctx.fillText(sc, scrn.width / 2 - 80, scrn.height / 2 + 0);
           sctx.strokeText(sc, scrn.width / 2 - 80, scrn.height / 2 + 0);
           sctx.fillText(bs, scrn.width / 2 - 80, scrn.height / 2 + 30);
