@@ -16,22 +16,37 @@ function resizeCanvas() {
   const windowWidth = window.innerWidth;
   const windowHeight = window.innerHeight;
   const windowAspect = windowWidth / windowHeight;
+  const isMobile = windowWidth <= 768;
   
-  if (windowAspect > ASPECT_RATIO) {
-    // Window is wider than canvas - fit to height
-    scale = windowHeight / CANVAS_HEIGHT;
-  } else {
-    // Window is taller than canvas - fit to width
-    scale = windowWidth / CANVAS_WIDTH;
-  }
-  
-  // Set canvas display size
-  scrn.style.width = (CANVAS_WIDTH * scale) + 'px';
-  scrn.style.height = (CANVAS_HEIGHT * scale) + 'px';
-  
-  // Keep internal resolution the same for game logic
+  // Always keep internal resolution the same for game logic
   scrn.width = CANVAS_WIDTH;
   scrn.height = CANVAS_HEIGHT;
+  
+  if (isMobile) {
+    // On mobile, let CSS handle full screen fill
+    // CSS will make it 100vw x 100vh with object-fit: cover
+    scrn.style.width = '100vw';
+    scrn.style.height = '100vh';
+    // Use actual viewport height for iOS Safari
+    const actualHeight = window.innerHeight || document.documentElement.clientHeight;
+    scrn.style.height = actualHeight + 'px';
+    scrn.style.position = 'fixed';
+    scrn.style.top = '0';
+    scrn.style.left = '0';
+  } else {
+    // On desktop, maintain aspect ratio and center
+    if (windowAspect > ASPECT_RATIO) {
+      scale = Math.min(windowHeight * 0.9 / CANVAS_HEIGHT, windowWidth * 0.9 / CANVAS_WIDTH);
+    } else {
+      scale = Math.min(windowWidth * 0.9 / CANVAS_WIDTH, windowHeight * 0.9 / CANVAS_HEIGHT);
+    }
+    
+    scrn.style.width = (CANVAS_WIDTH * scale) + 'px';
+    scrn.style.height = (CANVAS_HEIGHT * scale) + 'px';
+    scrn.style.position = 'relative';
+    scrn.style.top = 'auto';
+    scrn.style.left = 'auto';
+  }
 }
 
 // Initial resize
